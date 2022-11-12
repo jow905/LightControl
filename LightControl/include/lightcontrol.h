@@ -22,13 +22,19 @@ using std::endl;
 using std::vector;
 using namespace serial;
 
+/*!
+ * Remove the definitions when you want import the APIs
+ */
+#define LIGHTCONTROL_API
+
 #ifdef LIGHTCONTROL_API
+	#define LIGHTCONTROL_API extern "C" __declspec(dllexport)
 #else
-#define LIGHTCONTROL_API extern "C" __declspec(dllexport)
+	#define LIGHTCONTROL_API extern "C" __declspec(dllimport)
 #endif
 
 /*
- * The light controller model list
+ * The light controller device model list
  */
 typedef enum _DEVICE_MODEL {
     PD_4T,
