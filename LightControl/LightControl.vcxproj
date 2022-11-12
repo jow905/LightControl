@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="easylogging++.h" />
     <ClInclude Include="include\lightcontrol.h" />
     <ClInclude Include="include\serial\impl\win.h" />
     <ClInclude Include="include\serial\serial.h" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="easylogging++.cc" />
     <ClCompile Include="src\impl\list_ports\list_ports_win.cc" />
     <ClCompile Include="src\impl\win.cc" />
     <ClCompile Include="src\lightcontrol.cpp" />

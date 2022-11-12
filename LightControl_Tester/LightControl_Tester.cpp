@@ -28,7 +28,7 @@ int main()
 	while (i--) {
 		int nChannel = rand() % 4 + 1;
 		if (!SetBrightnessTo(i, nChannel)) {
-			std::cout << "set brightness: " << i << ", Channel: " << nChannel << " NG!!" << std::endl;
+			//std::cout << "set brightness: " << i << ", Channel: " << nChannel << " NG!!" << std::endl;
 		}
 	}
 

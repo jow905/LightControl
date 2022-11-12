@@ -25,9 +25,9 @@ using namespace serial;
 /*!
  * Remove the definitions when you want import the APIs
  */
-#define LIGHTCONTROL_API
+#define LIGHTCONTROL_API_EXPORT 
 
-#ifdef LIGHTCONTROL_API
+#ifdef LIGHTCONTROL_API_EXPORT
 	#define LIGHTCONTROL_API extern "C" __declspec(dllexport)
 #else
 	#define LIGHTCONTROL_API extern "C" __declspec(dllimport)
@@ -46,7 +46,7 @@ typedef enum _DEVICE_MODEL {
  */
 LIGHTCONTROL_API BOOL OpenSerialPort(const std::string& port = "",
     uint32_t baudrate = 9600,
-    Timeout timeout = Timeout(15),
+    uint32_t timeout = 50,
     bytesize_t bytesize = eightbits,
     parity_t parity = parity_none,
     stopbits_t stopbits = stopbits_one,

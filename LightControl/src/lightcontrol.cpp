@@ -4,6 +4,7 @@
 
 
 #include "..\include\lightcontrol.h"
+#include "..\easylogging++.h"
 
 /*
 *  Global variant for read and write the serial port
@@ -12,15 +13,16 @@ serial::Serial g_serialPort;
 
 LIGHTCONTROL_API BOOL OpenSerialPort(const std::string& port, 
 	uint32_t baudrate, 
-	Timeout timeout, 
+	uint32_t timeout,
 	bytesize_t bytesize, 
 	parity_t parity, 
 	stopbits_t stopbits, 
 	flowcontrol_t flowcontrol)
 {
+	Timeout t = Timeout::simpleTimeout(timeout);
 	g_serialPort.setPort(port);
 	g_serialPort.setBaudrate(baudrate);
-	g_serialPort.setTimeout(timeout);
+	g_serialPort.setTimeout(t);
 	g_serialPort.setBytesize(bytesize);
 	g_serialPort.setParity(parity);
 	g_serialPort.setStopbits(stopbits);
@@ -29,14 +31,16 @@ LIGHTCONTROL_API BOOL OpenSerialPort(const std::string& port,
 	try {
 		g_serialPort.open();
 		if (g_serialPort.isOpen()) {
+			CLOG(INFO, "lightcontrol") << "Serial port '"<< port <<"' opened successfully!";
 			return TRUE;
 		}
 		else {
+			CLOG(ERROR, "lightcontrol") << "Serial port opened failed! code: " << GetLastError();
 			return FALSE;
 		}
 	}
 	catch (exception& e) {
-		std::cerr << e.what() << std::endl;
+		CLOG(ERROR, "lightcontrol") << "Serial port opened failed! " << e.what();
 	}
 
 	return FALSE;
@@ -78,13 +82,16 @@ LIGHTCONTROL_API BOOL SetBrightnessTo(unsigned int nVal, int nChannel, DEVICE_MO
 				ReadSerialPort(strReceived, 256);
 
 				if ((strReceived.c_str()[0] - 'A' + 1) == nChannel) {
+					CLOG(INFO, "lightcontrol") << "Set light value OK! Send: " << ss.str() << " Received: " << strReceived;
 					return TRUE;
 				}
 				else {
+					CLOG(ERROR, "lightcontrol") << "Set light value NG! Send: " << ss.str() << " Received: " << strReceived;
 					return FALSE;
 				}
 			}
 			else {
+				CLOG(ERROR, "lightcontrol") << "Send command string to light conroller failed!";
 				return FALSE;
 			}
 		break;
