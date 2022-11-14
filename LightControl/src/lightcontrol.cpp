@@ -11,7 +11,7 @@
 */
 serial::Serial g_serialPort;
 
-LIGHTCONTROL_API BOOL OpenSerialPort(const std::string& port, 
+LIGHTCONTROL_API BOOL InitSerialPort(const std::string& port,
 	uint32_t baudrate, 
 	uint32_t timeout,
 	bytesize_t bytesize, 
@@ -19,6 +19,10 @@ LIGHTCONTROL_API BOOL OpenSerialPort(const std::string& port,
 	stopbits_t stopbits, 
 	flowcontrol_t flowcontrol)
 {
+	if (g_serialPort.isOpen()) {
+		g_serialPort.close();
+	}
+
 	Timeout t = Timeout::simpleTimeout(timeout);
 	g_serialPort.setPort(port);
 	g_serialPort.setBaudrate(baudrate);
@@ -45,6 +49,7 @@ LIGHTCONTROL_API BOOL OpenSerialPort(const std::string& port,
 
 	return FALSE;
 }
+
 
 LIGHTCONTROL_API BOOL SetBrightnessTo(unsigned int nVal, int nChannel, DEVICE_MODEL devModel)
 {
@@ -106,6 +111,7 @@ LIGHTCONTROL_API BOOL SetBrightnessTo(unsigned int nVal, int nChannel, DEVICE_MO
 	return FALSE;
 }
 
+
 LIGHTCONTROL_API BOOL WriteSerialPort(std::string str)
 {
 	if (!g_serialPort.isOpen()) {
@@ -128,6 +134,7 @@ LIGHTCONTROL_API BOOL WriteSerialPort(std::string str)
 	return FALSE;
 }
 
+
 LIGHTCONTROL_API BOOL ReadSerialPort(std::string& strReceived, size_t bytesToRead)
 {
 	if (!g_serialPort.isOpen() || bytesToRead < 0) {
@@ -144,6 +151,7 @@ LIGHTCONTROL_API BOOL ReadSerialPort(std::string& strReceived, size_t bytesToRea
 
 	return FALSE;
 }
+
 
 LIGHTCONTROL_API VOID CloseSerialPort()
 {
