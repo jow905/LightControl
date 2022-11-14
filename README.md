@@ -5,16 +5,27 @@ This is visual studio 2022 project designed for setting the value of following d
 ## device type: PD_4T
 ![image](https://user-images.githubusercontent.com/19189198/201564575-235fa97c-de6c-4ddf-b836-aaf3c935fcb7.png)   
 
-other devices will be added in the future
+Other devices will be added in the future!!!
 
 # Usage
 ## Simple test
 1. Clone the project files, change the port name according your serial port configuration and then compile,    
-it will generate three files: 'LightControl.dll', 'LightControl.lib', 'LightControl_Tester.exe'.     
-2. You can simply run 'LightControl_Tester.exe' for testing.   
+three files will be generated: 'LightControl.dll', 'LightControl.lib', 'LightControl_Tester.exe'.     
+2. You can simply run 'LightControl_Tester.exe' for testing.  
+```
+D:\LightControl\x64\Debug>LightControl_Tester.exe
+[2022-11-14 13:14:41,490922 INFO] Serial port 'COM3' opened successfully!
+[2022-11-14 13:14:41,550065 INFO] Set light value OK! Send: SC0225# Received: C
+value:255, channel:3 result: success!
+[2022-11-14 13:14:46,621951 INFO] Set light value OK! Send: SA0141# Received: A
+[2022-11-14 13:14:46,684872 INFO] Set light value OK! Send: SD0126# Received: D
+[2022-11-14 13:14:46,746483 INFO] Set light value OK! Send: SB0149# Received: B
+[2022-11-14 13:14:46,808297 INFO] Set light value OK! Send: SB0207# Received: B
+...
+```
 ## Use in custom project
-1. Copy 'include' folder, 'LightControl.dll' and 'LightControl.lib' to you project
-2. how to coding: See the source file 'LightControl_Tester.cpp'
+1. Copy 'include' folder, 'LightControl.dll' and 'LightControl.lib' to you project.
+2. How to coding: see the source file 'LightControl_Tester.cpp'.
 
 ```
 #include <iostream>
