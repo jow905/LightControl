@@ -5,7 +5,7 @@
 
 
 #include <iostream>
-#include "../LightControl/include/lightcontrol.h"
+#include "lightcontrol.h"
 
 #ifdef _DEBUG	//_DEBUG
 	#pragma comment(lib, "LightControld.lib")

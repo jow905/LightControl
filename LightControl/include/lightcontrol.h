@@ -12,6 +12,9 @@
 #include <unistd.h>
 #endif
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/daily_file_sink.h"
+
 #include "serial/serial.h"
 
 using std::string;
@@ -32,6 +35,9 @@ using namespace serial;
 	#define LIGHTCONTROL_API extern "C" __declspec(dllimport)
 #endif
 
+
+//global variants
+std::shared_ptr<spdlog::logger> g_logger = NULL;
 
 //The light controller device model list
 typedef enum _DEVICE_MODEL {

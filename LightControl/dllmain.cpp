@@ -1,42 +1,46 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "framework.h"
-#include "easylogging++.h"
-
-//disable the default logger
-//el::Loggers::reconfigureLogger("default", el::ConfigurationType::Enabled, "false");
-
-INITIALIZE_EASYLOGGINGPP
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/daily_file_sink.h"
 
 
-//define the call back function to roll the log files
+/**
+ * Initialize and register the loggers.
+ * 
+ * \return void;
+ */
 
-static unsigned int idx;
-
-void rolloutHandler(const char* filename, std::size_t size)
+VOID InitLoggers()
 {
-    //current time
-    struct tm stime;
-    time_t now = time(0);
-    localtime_s(&stime, &now);
+    try {
+#ifdef _DEBUG
+        //Create console logger
+        auto console_sink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+#endif  //_DEBUG
+        //Create a daily logger - a new file is created every day on 8:30am
+        auto file_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("logs/lightcontrol.log", 8, 30);
 
-    char tmp[32] = { NULL };
-    strftime(tmp, sizeof(tmp), "%Y%m%d%H%M%S", &stime);
-    std::string date(tmp);
+#ifdef _DEBUG
+        spdlog::sinks_init_list sinkLists = { console_sink, file_sink };
+#else   //_DEBUG
+        spdlog::sinks_init_list sinkLists = { file_sink };
+#endif  //_DEBUG
 
-    char buf[MAX_PATH] = { 0 };
-    GetCurrentDirectoryA(MAX_PATH, buf);
+        std::shared_ptr<spdlog::logger> pLoggers = std::make_shared<spdlog::logger>("lightcontrol", sinkLists);
+        pLoggers->set_level(spdlog::level::trace);
 
-    CreateDirectoryA(".\\logs", NULL);
-    std::stringstream ssSourceFileName;
-    std::stringstream ssTargetFileName;
-    ssSourceFileName << buf << "\\" << filename;
-    ssTargetFileName << buf << "\\logs\\" << date << ".log";
-    std::string strSourceFileName = ssSourceFileName.str();
-    std::string strTargetFileName = ssTargetFileName.str();
-    CopyFileA(strSourceFileName.c_str(), strTargetFileName.c_str(), TRUE);
+        //set global pattern
+        spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [tid %t] [%^%l%$] %v");
+        spdlog::set_level(spdlog::level::trace);
+
+        spdlog::initialize_logger(pLoggers);
+    }
+    catch (const spdlog::spdlog_ex&) {
+    }
 }
 
 
+//define the call back function to roll the log files
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -45,34 +49,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-    {
-        //configuration
-        el::Configurations confs;
-        confs.setToDefault();
-        confs.setGlobally(el::ConfigurationType::Format, "[%datetime %level] %msg");
-        confs.setGlobally(el::ConfigurationType::Enabled, "true");
-        confs.setGlobally(el::ConfigurationType::Filename, "lightcontrol.log");
-        confs.setGlobally(el::ConfigurationType::ToFile, "true");
-#ifndef _DEBUG 
-        confs.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
-#endif
-        confs.setGlobally(el::ConfigurationType::SubsecondPrecision, "6");
-        confs.setGlobally(el::ConfigurationType::PerformanceTracking, "true");
-        confs.setGlobally(el::ConfigurationType::MaxLogFileSize, "2097152");
-        confs.setGlobally(el::ConfigurationType::LogFlushThreshold, "1");
-
-        //config and register new logger named 'ligtcontrol'
-        el::Loggers::reconfigureLogger("lightcontrol", confs);
-
-        el::Helpers::installPreRollOutCallback(rolloutHandler);
-
-        //CLOG(INFO, "lightcontrol") << "Logger configured!!";
-    }
-
+        InitLoggers();
         break;
     case DLL_THREAD_ATTACH:
+        break;
     case DLL_THREAD_DETACH:
+        break;
     case DLL_PROCESS_DETACH:
+        spdlog::shutdown();
         break;
     }
     return TRUE;
