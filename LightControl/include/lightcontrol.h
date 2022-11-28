@@ -36,9 +36,6 @@ using namespace serial;
 #endif
 
 
-//global variants
-std::shared_ptr<spdlog::logger> g_logger = NULL;
-
 //The light controller device model list
 typedef enum _DEVICE_MODEL {
     PD_4T,

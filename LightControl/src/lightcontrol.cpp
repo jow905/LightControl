@@ -9,7 +9,9 @@
 *  Global variant for read and write the serial port
 */
 
+//global variants
 serial::Serial g_serialPort;
+std::shared_ptr<spdlog::logger> g_logger = NULL;
 
 LIGHTCONTROL_API BOOL InitSerialPort(const std::string& port,
 	uint32_t baudrate, 
