@@ -32,6 +32,7 @@ VOID InitLoggers()
         //set global pattern
         spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [tid %t] [%^%l%$] %v");
         spdlog::set_level(spdlog::level::trace);
+        spdlog::flush_on(spdlog::level::trace);
 
         spdlog::initialize_logger(pLoggers);
     }
